@@ -1,6 +1,6 @@
 """UI package for Dash user interface components."""
 
-from .viewport_ui import ViewportUI
+from .layouts.layout import Layout
+from .callbacks.callbacks import Callbacks
 
-__all__ = ['ViewportUI']
-
+__all__ = ['Layout', 'Callbacks']
