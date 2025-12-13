@@ -7,7 +7,7 @@ class Layout:
         """Initialize ViewportLayout with dark-themed layout."""
         pass
 
-    def build_input_card(self, card_id, text_color, card_style, display_item_style):
+    def build_input_card(self, card_id, text_color, card_style, display_item_style, upload_style):
         """
         Creates a single input card with two columns:
         - Left: Image display
@@ -36,9 +36,9 @@ class Layout:
                 ], style={'flex': '1', 'paddingTop': '8px'}) 
                 
             ], style={
-                'display': 'flex', 
-                'flexDirection': 'row', 
-                'alignItems': 'center', 
+                'display': 'flex',
+                'flexDirection': 'row',
+                'alignItems': 'center',
                 'marginBottom': '12px',
                 'width': '100%'
             }),
@@ -46,31 +46,24 @@ class Layout:
             # Two columns: Image and FT Display
             html.Div([
                 # Left Column: Image Display Area
+
                 html.Div([
+                    # Upload area (small, fixed height)
                     dcc.Upload(
                         id=f'upload-image-{card_id}',
-                        children=html.Div(
-                            id=f'image-display-{card_id}',
-                            children=[
-                                html.Div(
-                                    "Double-click to upload image",
-                                    style={
-                                        'color': '#888',
-                                        'fontSize': '14px',
-                                        'textAlign': 'center'
-                                    }
-                                )
-                            ],
-                            style={
-                                **display_item_style,
-                                'cursor': 'pointer',
-                                'marginRight': '0'
-                            }
-                        ),
+                        children=html.Div("Upload an image"),
                         multiple=False,
-                        accept="image/*"
+                        accept="image/*",
+                        # style={'height': '40px', 'marginBottom': '2px'}
+                        style=upload_style
+                    ),
+
+                    # Display area (flex 1, will show image)
+                    html.Div(
+                        id=f'image-display-{card_id}',
+                        style={**display_item_style, 'flex': 1, 'minHeight': '200px', 'borderRadius': '8px', 'backgroundColor': '#0f0f0f'}
                     )
-                ], style={'flex': '1', 'marginRight': '8px'}),
+                ], style={'display': 'flex', 'flexDirection': 'column', 'flex': '1', 'height': '100%'}),
 
                 # Right Column: Dropdown + FT Display Area
                 html.Div([
@@ -102,10 +95,15 @@ class Layout:
                 'display': 'flex',
                 'flexDirection': 'row',
                 'flex': '1',
-                'gap': '8px'
+                'gap': '8px',
+                'minHeight': 0
             })
-
-        ], style=card_style)
+        ], style={
+            **card_style,
+            'display': 'flex',
+            'flexDirection': 'column',
+            'overflow': 'hidden'   # ← ADDED
+        })
 
     def build_settings_section(self, text_color):
         """
@@ -359,6 +357,19 @@ class Layout:
             "justifyContent": "center",
             "minHeight": "200px"
         }
+        upload_style={
+            "width": "100%",
+            "padding": "6px",
+            "fontSize": "12px",
+            "cursor": "pointer",
+            "backgroundColor": "#4CAF50",
+            "color": "white",
+            "borderRadius": "6px",
+            "marginBottom": "8px",
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "center"
+        }
 
         cards = []
         for card_id in range(1, 5):
@@ -367,7 +378,8 @@ class Layout:
                     card_id,
                     text_color,
                     left_card_style,
-                    display_item_style
+                    display_item_style,
+                    upload_style
                 )
             )
 
@@ -415,6 +427,18 @@ class Layout:
                     'job_started': False,
                     'viewport': None,
                     'progress': 0.0
+                }
+            ),
+
+            dcc.Store(
+                id='bc-store',
+                data={
+                    str(i): {
+                        'brightness': 0.0,
+                        'contrast': 1.0,
+                        'last_x': None,
+                        'last_y': None
+                    } for i in range(1, 5)
                 }
             )
             

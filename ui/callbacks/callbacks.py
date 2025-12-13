@@ -91,12 +91,13 @@ class Callbacks:
                 hoverinfo='skip'
             ))
             raw_fig.update_layout(
-                xaxis={'visible': False, 'showgrid': False},
-                yaxis={'visible': False, 'showgrid': False, 'autorange': 'reversed'},
+                xaxis={'visible': False, 'showgrid': False, 'fixedrange': True},
+                yaxis={'visible': False, 'showgrid': False, 'autorange': 'reversed', 'fixedrange': True},
                 margin=dict(l=0, r=0, t=0, b=0),
                 paper_bgcolor='#0f0f0f',
                 plot_bgcolor='#0f0f0f',
-                autosize=True
+                autosize=True,
+                dragmode=False
             )
             raw_fig.update_yaxes(scaleanchor="x", scaleratio=1)
             
@@ -120,9 +121,10 @@ class Callbacks:
             
             raw_display = html.Div([
                 dcc.Graph(
+                    id=f'raw-graph-{card_id}',
                     figure=raw_fig,
                     config={'displayModeBar': False},
-                    style={'height': '100%', 'width': '100%'}
+                    style={'height': '100%', 'width': '100%'},
                 )
             ], style={'height': '100%', 'width': '100%'})
             
@@ -435,3 +437,4 @@ class Callbacks:
                     return error_div, no_update, job_store
                 else:
                     return no_update, error_div, job_store
+
