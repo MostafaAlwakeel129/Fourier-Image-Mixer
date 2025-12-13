@@ -263,7 +263,7 @@ class Controller:
         """Updates the mixing mode (mag_phase vs real_imag) and restarts mixing."""
         if mode in ['mag_phase', 'real_imag']:
             self._mode = mode
-            self.start_mixing_job()
+            # self.start_mixing_job()
 
     def get_plotting_data(self, index: int, mode: Literal['raw', 'magnitude', 'phase', 'real', 'imag'] = 'raw') -> \
     Optional[np.ndarray]:
@@ -315,7 +315,7 @@ class Controller:
         self._current_mask = handler.create_mask(shape, rect_coords, is_inner)
 
         # 3. Automatically restart the mixing job with the new mask
-        self.start_mixing_job()
+        # self.start_mixing_job()
 
 
     def get_session(self) -> GlobalSessionState:
