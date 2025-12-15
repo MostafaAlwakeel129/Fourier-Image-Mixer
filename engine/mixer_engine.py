@@ -55,29 +55,22 @@ class MixerEngine:
 
         shape = images[0].shape
 
-        # 1. Mix Magnitudes
+        # 1. Mix Magnitudes - Direct multiplication without normalization
         mixed_magnitude = np.zeros(shape, dtype=np.float64)
-        total_mag_weight = sum(magnitude_sources.values())
 
-        # Safety check for division by zero
-        if total_mag_weight == 0:
-            total_mag_weight = 1.0
-
-        for idx, w in magnitude_sources.items():
-            if idx < len(images) and images[idx] is not None:
-                mixed_magnitude += images[idx].get_data('magnitude') * (w / total_mag_weight)
+        for idx, weight in magnitude_sources.items():
+            if idx < len(images) and images[idx] is not None and weight != 0:
+                mixed_magnitude += images[idx].get_data('magnitude') * weight
 
         # Report: Magnitude Done
         if progress_callback: progress_callback(0.4)
 
-        # 2. Mix Phases
+        # 2. Mix Phases - Direct multiplication without normalization
         mixed_phase = np.zeros(shape, dtype=np.float64)
-        total_phase_weight = sum(phase_sources.values())
-        if total_phase_weight == 0: total_phase_weight = 1.0
 
-        for idx, w in phase_sources.items():
-            if idx < len(images) and images[idx] is not None:
-                mixed_phase += images[idx].get_data('phase') * (w / total_phase_weight)
+        for idx, weight in phase_sources.items():
+            if idx < len(images) and images[idx] is not None and weight != 0:
+                mixed_phase += images[idx].get_data('phase') * weight
 
         # Report: Phase Done
         if progress_callback: progress_callback(0.7)
@@ -114,23 +107,19 @@ class MixerEngine:
         if progress_callback: progress_callback(0.1)
         shape = images[0].shape
 
+        # Mix Real - Direct multiplication without normalization
         mixed_real = np.zeros(shape, dtype=np.float64)
-        mixed_imag = np.zeros(shape, dtype=np.float64)
-
-        total_real = sum(real_sources.values()) or 1.0
-        total_imag = sum(imag_sources.values()) or 1.0
-
-        # Mix Real
-        for idx, w in real_sources.items():
-            if idx < len(images) and images[idx] is not None:
-                mixed_real += images[idx].get_data('real') * (w / total_real)
+        for idx, weight in real_sources.items():
+            if idx < len(images) and images[idx] is not None and weight != 0:
+                mixed_real += images[idx].get_data('real') * weight
 
         if progress_callback: progress_callback(0.4)
 
-        # Mix Imag
-        for idx, w in imag_sources.items():
-            if idx < len(images) and images[idx] is not None:
-                mixed_imag += images[idx].get_data('imag') * (w / total_imag)
+        # Mix Imag - Direct multiplication without normalization
+        mixed_imag = np.zeros(shape, dtype=np.float64)
+        for idx, weight in imag_sources.items():
+            if idx < len(images) and images[idx] is not None and weight != 0:
+                mixed_imag += images[idx].get_data('imag') * weight
 
         if progress_callback: progress_callback(0.7)
 
